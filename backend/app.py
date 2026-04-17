@@ -44,15 +44,16 @@ def QuizGenerator():
         )
 
         message = [
-            SystemMessage(content="""You are a study assistant.only give the content according to subject
+            SystemMessage(content=SystemMessage(content="""You are a study assistant.only give the content according to subject
                    Your task is to generate 10 quiz questions that cover the entire content.
                   NOTE: the answer Should be always refers option1 ,option2,option3,option4 etc....
                   NOTE: the given answer should match to the on of the option exactly
+                  the difficulity level should be medium to hard and jumble the options
 
-    Return the response strictly in this JSON list format: The exam should be hard
+    Return the response strictly in this JSON list format:
     [
     {
-    "question_number": 1,
+    "question_number": "...",
     "question": "...",
     "option1": "...",
     "option2": "...",
