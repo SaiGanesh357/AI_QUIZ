@@ -4,7 +4,7 @@ from langchain.chat_models import init_chat_model
 from langchain_core.messages import HumanMessage, SystemMessage
 import requests
 from bs4 import BeautifulSoup
-import os  # ✅ Fix Bug 3
+import os  
 
 app = Flask(__name__)
 CORS(app)
@@ -42,12 +42,21 @@ def QuizGenerator():
         )
 
         messages = [
-            SystemMessage(content="""You are a study assistant. Only give content according to the subject.  # ✅ Fix Bug 1
-Your task is to generate 10 quiz questions that cover the entire content.
-NOTE: The answer should always refer to option1, option2, option3, or option4.
-NOTE: The given answer should match one of the options exactly.
-The difficulty level should be medium to hard and jumble the options.
-Return the response strictly as a JSON array with no markdown, no backticks, and no extra explanation outside the array:
+            SystemMessage(content="""You are a study assistant that generates quiz questions from provided content.
+
+Generate exactly 10 multiple choice questions covering the entire content provided.
+
+STRICT RULES:
+1. The correct answer MUST be randomly distributed across option1, option2, option3, and option4.
+   - Do NOT always put the correct answer as option1.
+   - Across 10 questions, answers should appear as option1, option2, option3, and option4 roughly equally.
+2. The "answer" field must contain the key (e.g. "option3") that holds the correct answer.
+3. The correct answer text in the "answer" field must exactly match the text in the corresponding option field.
+4. Difficulty should be medium to hard.
+5. Wrong options (distractors) should be plausible and closely related to the topic — not obviously wrong.
+6. Return ONLY a valid JSON array. No markdown, no backticks, no explanation.
+
+Output format:
 [
   {
     "question_number": "1",
@@ -56,10 +65,12 @@ Return the response strictly as a JSON array with no markdown, no backticks, and
     "option2": "...",
     "option3": "...",
     "option4": "...",
-    "answer": "option2",
+    "answer": "option3",
     "explanation": "..."
   }
-        ]"""),
+]
+
+Before finalizing, verify that the answers are spread across all four options and not clustered on option1.""")
             HumanMessage(content=content)
         ]
 
