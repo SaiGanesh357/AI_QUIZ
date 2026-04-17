@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <marquee behavior="scroll" direction="left" scrollamount="15">
+  AI QUIZ GENERATOR | Wikipedia | W3 Schools | stack Overflow | Geek For Geeks | Java Tpoint | CloudFlars | Imperva 
+</marquee>
+    <div class="body container">
+        <div class="fixed-top">
+  <div class="collapse" id="navbarToggleExternalContent">
+    <div class="bg-dark p-4">
+      <input type="password" placeholder="Please Provide API_KEY" id="api" />
+      <button class="btn btn-success" id="save">Save</button><br/>
+      <p class="text-light">Go to Groq and create the apikey and and place here and save it... your api key is safe and secure</p>
+    </div>
+  </div>
+  <nav class="navbar navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </nav>
+</div>
+        <div class="div">
+            <input type="text" id="link" />
+            <button class="generate" id="bgen">Generate</button>
+        </div>
+        <div class="d-none d-flex-flex-column justify-content-center" style="height: 100vh" id="loader">
+            <div class="text-center">
+           <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+         </div>
+        </div>
+        </div>
+        <div id="container"></div>
+        <p id="error"></p>
+        <button id="score" class="d-none submit">Submit</button>
+        <div class="card d-none text-center" id="s_card">
+            <svg id="cross" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi xx bi-x-lg" viewBox="0 0 16 16">
+               <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+            </svg>
+            <h1 id="scoreCard"></h1>
+        </div>
+    </div>
+    <script>
+        const load=document.getElementById("loader")
+        const api_link="http://127.0.0.1:5000/quiz-generator"
+        const button = document.getElementById("bgen")
+        const container=document.getElementById("container")
+        const score = document.getElementById("score")
+        const card=document.getElementById("scoreCard")
+        const save = document.getElementById("save")
+        const s_card=document.getElementById("s_card")
+        const answers = [0,0,0,0,0,0,0,0,0,0]
+        const cross = document.getElementById("cross")
+        const error = document.getElementById("error")
+        let data=null
+        
+        save.addEventListener("click",()=>{
+            const key1=document.getElementById("api").value
+            if(key1.length == 0){
+                alert("Please Provide API_KEY")
+            }else{
+                localStorage.setItem("API_KEY",key1)
+            }
+        })
+        cross.addEventListener("click",()=>{
+            data = null;
+            s_card.classList.add("d-none")
+        })
+        
+        function isCorrect(qno, val, ans) {
+            console.log(val+" === "+ans)
+        answers[qno] = (val === ans) ? 1 : 0
+        }
+        score.addEventListener("click",()=>{
+            const elements = document.getElementsByClassName("x")
+        let i=0;
+        for (let el of elements) {
+            if(answers[1]==1){
+                el.classList.add("green")
+            }else{
+                el.classList.add("red")
+            }
+        el.classList.remove("d-none")
+        }
+            let s=0;
+            answers.map(value=>{
+                if(value===1) s++;
+            })
+            if(s<=4) card.classList.add("red")
+            else if(s<7 && s>4) card.classList.add("yellow")
+                else card.classList.add("green")
+                s_card.classList.remove("d-none")
+            card.textContent=`Score: ${s}/10`
+        })
+        
+        button.addEventListener("click", async ()=>{
+            const link = document.getElementById("link").value
+            if(localStorage.getItem("API_KEY")===null){
+                 alert("Please provide API_KEY")
+                 }else{
+                    if(link!=="" || link==null){
+                     load.classList.add("d-block")
+                     
+                     const details = {
+                         method : "POST",
+                    headers :{
+                        "Content-Type" : "application/json"
+                    },
+                    body : JSON.stringify({ link: link,api: localStorage.getItem("API_KEY") })
+                }
+                document.getElementById("link").value=""
+                data = await fetch(api_link,details)
+                
+                data = await data.json()
+                console.log(data)
+                if("error" in data){
+                    load.classList.remove("d-block");
+                    error.textContent="Your Daily limit is completed please update the api key"
+                }else{
+                    content = JSON.parse(data.response)
+                    load.classList.remove("d-block");
+                    content.map(value=>{
+               const questions=document.createElement("div")
+               const question = document.createElement("h3")
+               question.textContent=value.question
+               questions.appendChild(question)
+               const orderlist = document.createElement('ol')
+               const list1=document.createElement("li")
+               const o1=document.createElement("input") 
+               o1.type="radio" 
+               o1.value="option1"
+               o1.id=`${value.question_number}_opt1`
+               o1.name = `${value.question_number}`
+               o1.onclick = () => isCorrect(value.question_number, o1.value, value.answer)
+               const label1 = document.createElement("label")
+               label1.textContent=value.option1
+               label1.htmlFor = o1.id
+               list1.appendChild(o1);
+               list1.appendChild(label1)
+               orderlist.appendChild(list1)
+               const list2=document.createElement("li")
+               const o2=document.createElement("input")
+               o2.type="radio"
+               o2.value="option2"
+               o2.id=`${value.question_number}_opt2`
+               o2.onclick = () => isCorrect(value.question_number, o2.value, value.answer)
+               o2.name=`${value.question_number}`
+               const label2 = document.createElement("label")
+               label2.textContent=value.option2
+               list2.appendChild(o2);
+               label2.htmlFor = o2.id
+               list2.appendChild(label2)
+               orderlist.appendChild(list2)
+               const list3=document.createElement("li")
+               const o3=document.createElement("input")
+               o3.type="radio"
+               o3.value="option3"
+               o3.id=`${value.question_number}_opt3`
+               o3.onclick = () => isCorrect(value.question_number, o3.value, value.answer)
+               o3.name=`${value.question_number}`
+               const label3 = document.createElement("label")
+               label3.textContent=value.option3
+               list3.appendChild(o3);
+               label3.htmlFor = o3.id
+               list3.appendChild(label3)
+               orderlist.appendChild(list3)
+               const list4=document.createElement("li")
+               const o4=document.createElement("input")  
+               o4.type="radio" 
+               o4.id=`${value.question_number}_opt4`
+               o4.value="option4"
+               o4.onclick = () => isCorrect(value.question_number, o4.value, value.answer)
+               o4.name=`${value.question_number}`
+               const label4 = document.createElement("label")
+               label4.textContent=value.option4
+               list4.appendChild(o4);
+               label4.htmlFor = o4.id
+               list4.appendChild(label4)
+               orderlist.appendChild(list4)
+               questions.appendChild(orderlist);
+               container.appendChild(questions)
+               const answer_cor=document.createElement("p")
+               const span=document.createElement("span")
+               span.textContent=`Correct Answer is: ${value.answer}`
+               answer_cor.appendChild(span)
+               const p=document.createElement("p")
+               p.textContent=`Explanation:${value.explanation}`
+               answer_cor.appendChild(p)
+               answer_cor.classList.add("d-none","x")
+               
+               container.appendChild(answer_cor)
+            })
+            score.classList.remove("d-none")
+        }
+        
+    }else{
+        alert("Please Provide link to Prepare Quiz")
+    }
+}
+})
+    </script>
+</body>
+</html>
+<!-- answer: "option3"
+    explanation: "The main purpose of an operating system is to act as an intermediary between the user and computer hardware, providing an environment in which a user can execute programs conveniently and efficiently."
+option1: "To manage hardware resources"
+option2: "To provide a platform for running applications"
+option3: "To act as an intermediary between the user and computer hardware"
+option4: "To manage network connections"
+question: "What is the main purpose of an operating system?"
+question_number: 8 -->

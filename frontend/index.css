@@ -1,0 +1,90 @@
+
+span{
+    font-weight: bold;
+}
+
+.body{
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+.div{
+    align-self: center;
+    padding-top: 50px;
+}
+label{
+    padding-left: 10px;
+}
+#link{
+    padding: 10px;
+    border-radius: 20px;
+    flex-shrink: 1;
+    width: 500px;
+    border: 1px solid rgb(131, 131, 255);
+}
+
+.generate{
+    background-image: linear-gradient(rgb(125, 113, 255),white);
+    padding: 10px;
+    border-radius: 10px;
+}
+ol{
+    /* display: flex;
+    flex-direction: column;
+    align-items: center; */
+}
+.submit{
+    background-image: linear-gradient(rgb(113, 255, 125),white);
+    padding: 10px;
+    border-radius: 10px;
+}
+#scoreCard{
+    font-family: Roboto;
+    font-size: 25px;
+}
+.card{
+ position: fixed;
+    height: 180px;
+    width: 300px;
+    background-color: rgb(255, 255, 255);
+    z-index: 1000;
+    border-radius: 20px;
+    display: flex;
+    border:1px solid rgb(124, 124, 124);
+}
+.xx{
+    align-self: flex-end;
+    margin: 20px;
+    color: red;
+    cursor: pointer;
+}
+.red{
+    color: red;
+}
+.green{
+    color: green;
+}
+.yellow{
+    color: yellow;
+}
+@media (max-width: 563px){
+    #link{
+    padding: 10px;
+    border-radius: 20px;
+    flex-shrink: 1;
+    width: 60%;
+    border: 1px solid rgb(131, 131, 255);
+}
+h3{
+    font-size: 16px;
+}
+label{
+    font-size: 14px;
+}
+}
+ol{
+    font-size: 14px;
+}
+
