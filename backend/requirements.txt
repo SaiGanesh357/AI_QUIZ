@@ -1,7 +1,9 @@
 flask
 flask-cors
 langchain
+langchain-core
 langchain-community
 langchain-groq
+beautifulsoup4
 requests
 gunicorn
