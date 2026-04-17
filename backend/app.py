@@ -70,7 +70,7 @@ Output format:
   }
 ]
 
-Before finalizing, verify that the answers are spread across all four options and not clustered on option1.""")
+Before finalizing, verify that the answers are spread across all four options and not clustered on option1."""),
             HumanMessage(content=content)
         ]
 
