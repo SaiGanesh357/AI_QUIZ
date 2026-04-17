@@ -1,14 +1,14 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from langchain.chat_models import init_chat_model
-from langchain.messages import HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage, SystemMessage
 import requests
 from bs4 import BeautifulSoup
+import os  # ✅ Fix Bug 3
 
 app = Flask(__name__)
 CORS(app)
 
-# Safe content loader (instead of WebBaseLoader)
 def get_content(url):
     headers = {"User-Agent": "Mozilla/5.0"}
     res = requests.get(url, headers=headers, timeout=10)
@@ -23,7 +23,6 @@ def home():
 def QuizGenerator():
     try:
         data = request.get_json()
-
         if not data:
             return jsonify({"error": "No data received"}), 400
 
@@ -32,7 +31,6 @@ def QuizGenerator():
 
         if not path:
             return jsonify({"error": "Invalid link"}), 400
-
         if not api_key:
             return jsonify({"error": "Missing API key"}), 400
 
@@ -43,14 +41,13 @@ def QuizGenerator():
             api_key=api_key
         )
 
-        message = [
-            SystemMessage(content=SystemMessage(content="""You are a study assistant. Only give content according to the subject.
+        messages = [
+            SystemMessage(content="""You are a study assistant. Only give content according to the subject.  # ✅ Fix Bug 1
 Your task is to generate 10 quiz questions that cover the entire content.
 NOTE: The answer should always refer to option1, option2, option3, or option4.
 NOTE: The given answer should match one of the options exactly.
 The difficulty level should be medium to hard and jumble the options.
 Return the response strictly as a JSON array with no markdown, no backticks, and no extra explanation outside the array:
-
 [
   {
     "question_number": "1",
@@ -66,13 +63,13 @@ Return the response strictly as a JSON array with no markdown, no backticks, and
             HumanMessage(content=content)
         ]
 
-        response = model.invoke(message)
-
+        response = model.invoke(messages)
         return jsonify({"response": response.content})
 
     except Exception as e:
         print("ERROR:", e)
         return jsonify({"error": str(e)}), 500
+
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 5000))  # ✅ Now os is imported
     app.run(host="0.0.0.0", port=port)
