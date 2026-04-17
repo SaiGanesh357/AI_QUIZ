@@ -2,7 +2,5 @@ flask
 flask-cors
 langchain
 langchain-community
-langchain-core
-langchain-openai
-beautifulsoup4
+langchain-gorq
 requests
