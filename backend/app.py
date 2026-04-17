@@ -3,6 +3,7 @@ from flask_cors import CORS
 from langchain_community.document_loaders import WebBaseLoader
 from langchain.chat_models import init_chat_model
 from langchain.messages import HumanMessage, SystemMessage
+import os
 app=Flask(__name__)
 CORS(app)
 
@@ -48,4 +49,6 @@ def QuizGenerator():
     return jsonify({
         "response":response.content
     })
-app.run(debug=True)
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
