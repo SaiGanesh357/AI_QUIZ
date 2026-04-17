@@ -2,6 +2,6 @@ flask
 flask-cors
 langchain
 langchain-community
-langchain-gorq
+langchain-groq
 requests
 gunicorn
