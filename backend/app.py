@@ -48,4 +48,4 @@ def QuizGenerator():
     return jsonify({
         "response":response.content
     })
-app.run()
+app.run(host="0.0.0.0", port=port)
